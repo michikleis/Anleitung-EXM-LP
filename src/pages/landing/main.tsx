@@ -20,9 +20,12 @@ const handleOptInSuccess = (data: { firstName: string; email: string }) => {
     window.location.href = `/thank-you?${params.toString()}`;
 };
 
+import { CookieBanner } from '../../components/CookieBanner';
+
 const root = ReactDOM.createRoot(rootElement);
 root.render(
     <React.StrictMode>
         <LandingPage onOptInSuccess={handleOptInSuccess} />
+        <CookieBanner />
     </React.StrictMode>
 );

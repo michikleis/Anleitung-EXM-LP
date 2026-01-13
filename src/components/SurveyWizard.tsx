@@ -67,7 +67,8 @@ const DEMO_STEPS: SurveyStep[] = [
       "Hashimoto",
       "Lipödem",
       "Diabetes Typ 2",
-      "Sonstige"
+      "Sonstige",
+      "Nichts davon"
     ]
   },
   {
@@ -137,6 +138,7 @@ export const SurveyWizard: React.FC<SurveyWizardProps> = ({ initialUserData }) =
 
   // New state for manual country code entry
   const [isManualPhone, setIsManualPhone] = useState(false);
+  const [whatsAppConsent, setWhatsAppConsent] = useState(false);
 
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const isIframe = window.location.pathname.includes('iframe');
@@ -230,6 +232,14 @@ export const SurveyWizard: React.FC<SurveyWizardProps> = ({ initialUserData }) =
 
   const handlePhoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError(null);
+
+    // WhatsApp Check
+    if (whatsAppConsent && phoneNumber.trim().length === 0) {
+      setValidationError("Bitte trage Deine Telefonnummer ein, damit wir Dich per WhatsApp kontaktieren können.");
+      return;
+    }
+
     // Allow empty (optional) OR valid length if typed
     if (phoneNumber.trim().length === 0) {
       setAnswers(prev => ({ ...prev, [step.id]: "Nicht angegeben" }));
@@ -276,6 +286,7 @@ export const SurveyWizard: React.FC<SurveyWizardProps> = ({ initialUserData }) =
         contact: answers[7] || { firstName: "Unknown", email: "unknown@example.com" },
         phone: answers[8] || "Nicht angegeben",
         availability: answers[9] || "Nicht angegeben",
+        whatsapp_consent: whatsAppConsent,
         raw_answers: answers
       };
 
@@ -289,12 +300,12 @@ export const SurveyWizard: React.FC<SurveyWizardProps> = ({ initialUserData }) =
         if (success) console.log("Final Answers sent:", payload);
         else console.error("Failed to send survey webhook");
 
-        // Handling Logic AFTER webhook attempt
+        // Handling Logic AFTER webhook attempt (ALWAYS redirect now)
         if (isDisqualified) {
           window.location.href = "https://start.einfachernaehrung.com/kontakterfolgreich";
         } else {
-          // Normal completion screen
-          setIsCompleted(true);
+          // Qualified -> Booking page
+          window.location.href = "https://start.einfachernaehrung.com/buchung";
         }
       });
     }
@@ -613,8 +624,37 @@ export const SurveyWizard: React.FC<SurveyWizardProps> = ({ initialUserData }) =
               {isManualPhone ? "Zurück zur Standard-Auswahl" : "Ich habe eine andere Vorwahl"}
             </button>
 
+            <div className="mt-4 flex items-start gap-4 p-4 border border-green-500 bg-white rounded-xl text-left">
+              {/* WhatsApp Icon */}
+              <img
+                src="https://kbpiyixmecbmxsagnilx.supabase.co/storage/v1/object/public/Bilder/Logos/WhatsApp%20Logo.png"
+                alt="WhatsApp"
+                className="w-6 h-6 shrink-0 mt-0.5"
+              />
+
+              {/* Checkbox */}
+              <input
+                type="checkbox"
+                id="whatsapp-consent"
+                checked={whatsAppConsent}
+                onChange={(e) => setWhatsAppConsent(e.target.checked)}
+                className="w-5 h-5 mt-1 rounded border-gray-300 text-[#25D366] focus:ring-[#25D366] shrink-0"
+              />
+
+              {/* Text */}
+              <label htmlFor="whatsapp-consent" className="text-sm text-gray-600 leading-snug cursor-pointer">
+                Statt telefonisch möchte ich lieber per WhatsApp von Einfach Ernährung kontaktiert werden, um Rückfragen zu meinem Anliegen zu klären oder weitere Informationen zu erhalten.
+              </label>
+            </div>
+
+            {validationError && (
+              <div className="mt-4 text-red-500 text-sm font-medium bg-red-50 px-3 py-2 rounded-lg border border-red-100 text-center">
+                {validationError}
+              </div>
+            )}
+
             <div className="mt-6 flex justify-end">
-              {/* Button disabled only if user STARTED typing but has < 6 chars. Enabled if empty (optional) or > 5. */}
+              {/* Button disabled only if user STARTED typing but has < 6 chars. */}
               <Button type="submit" disabled={phoneNumber.length > 0 && phoneNumber.length < 6}>
                 Weiter
               </Button>

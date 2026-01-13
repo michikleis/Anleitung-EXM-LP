@@ -119,6 +119,12 @@ export const OptInForm: React.FC<OptInFormProps> = ({ onSuccess, variant = 'defa
           Trage Dich jetzt ein und sichere Dir den Zugang zur Komplettanleitung für 0 €.
         </h3>
 
+        <img
+          src="https://kbpiyixmecbmxsagnilx.supabase.co/storage/v1/object/public/Bilder/Produktbild/Produktbild%20Video-Training.webp"
+          alt="Video Training Produktbild"
+          className="w-full rounded-lg mb-4 shadow-sm"
+        />
+
         <div>
           <input
             type="text"
@@ -152,7 +158,7 @@ export const OptInForm: React.FC<OptInFormProps> = ({ onSuccess, variant = 'defa
             className="mt-1 w-4 h-4 rounded border-gray-300 text-[#824ca7] focus:ring-[#824ca7]"
           />
           <label htmlFor="privacy" className="text-left leading-snug">
-            Ich habe die <a href="/datenschutz" target="_blank" className="underline hover:text-[#824ca7]">Datenschutzbestimmungen</a> gelesen und stimme diesen zu.
+            Ich habe die <a href="https://www.einfachernaehrung.com/datenschutz" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#824ca7]">Datenschutzbestimmungen</a> gelesen und stimme diesen zu.
           </label>
         </div>
         {errors.privacy && <span className={errorClasses}>{errors.privacy}</span>}
