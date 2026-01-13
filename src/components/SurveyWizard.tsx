@@ -297,9 +297,6 @@ export const SurveyWizard: React.FC<SurveyWizardProps> = ({ initialUserData }) =
 
       // ALWAYS send webhook first
       trigger(payload).then(success => {
-        if (success) console.log("Final Answers sent:", payload);
-        else console.error("Failed to send survey webhook");
-
         // Handling Logic AFTER webhook attempt (ALWAYS redirect now)
         if (isDisqualified) {
           window.location.href = "https://start.einfachernaehrung.com/kontakterfolgreich";

@@ -6,8 +6,6 @@ export const useWebhook = (eventName: string) => {
 
     const trigger = useCallback(async (payload: any) => {
         try {
-            console.log(`Invoking secure function for ${eventName}...`);
-
             const { data, error } = await supabase.functions.invoke('trigger-webhook', {
                 body: {
                     event_name: eventName,
@@ -16,11 +14,10 @@ export const useWebhook = (eventName: string) => {
             });
 
             if (error) {
-                console.error('Edge Function Error:', error);
+                // Error handled silently or minimal logging
                 return false;
             }
 
-            console.log('Secure transmission successful:', data);
             return true;
 
         } catch (err) {

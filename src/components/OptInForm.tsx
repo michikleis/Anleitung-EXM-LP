@@ -93,8 +93,6 @@ export const OptInForm: React.FC<OptInFormProps> = ({ onSuccess, variant = 'defa
         source: 'LandingPage_ExperimentalMethod_V1'
       };
 
-      console.log('Sending Webhook payload:', payload);
-
       const success = await trigger(payload);
 
       if (success) {
